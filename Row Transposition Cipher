@@ -1,0 +1,77 @@
+import math
+
+def encrypt_row_transposition(message, key):
+    temp = []
+    for i in key:
+        if i not in temp:
+            temp.append(i)
+    key = "".join(temp)
+
+    b = math.ceil(len(message) / len(key))
+    if b < len(key):
+        b += (len(key) - b)
+
+    arr = [['_' for _ in range(len(key))] for _ in range(b)]
+
+    i = 0
+    j = 0
+    for char in message:
+        arr[i][j] = char
+        j += 1
+        if j > len(key) - 1:
+            j = 0
+            i += 1
+
+    cipher_text = ""
+    kk = sorted(key)
+    for i in kk:
+        h = key.index(i)
+        for j in range(len(arr)):
+            cipher_text += arr[j][h]
+    return cipher_text
+
+def decrypt_row_transposition(cipher_text, key):
+    temp = []
+    for i in key:
+        if i not in temp:
+            temp.append(i)
+    key = "".join(temp)
+
+    arr = [['' for _ in range(len(key))] for _ in range(int(len(cipher_text) / len(key)))]
+    kk = sorted(key)
+    
+    d = 0
+    for i in kk:
+        h = key.index(i)
+        for j in range(len(key)):
+            arr[j][h] = cipher_text[d]
+            d += 1
+
+    plain_text = ""
+    for i in arr:
+        for j in i:
+            plain_text += j
+    return plain_text
+
+def row_transposition_menu():
+    while True:
+        print("\nMenu:")
+        print("1. Encrypt")
+        print("2. Decrypt")
+        print("3. Exit")
+        choice = input("Enter your choice (1/2/3): ")
+        if choice == '1':
+            message = input("Enter the message to be encrypted: ")
+            key = input("Enter the key in alphabets: ")
+            print("The cipher text is:", encrypt_row_transposition(message, key))
+        elif choice == '2':
+            cipher_text = input("Enter the message to be decrypted: ")
+            key = input("Enter the key in alphabets: ")
+            print("The plain text is:", decrypt_row_transposition(cipher_text, key))
+        elif choice == '3':
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Please enter a valid option.")
+
+row_transposition_menu()
