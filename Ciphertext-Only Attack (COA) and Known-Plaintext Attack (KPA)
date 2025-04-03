@@ -1,0 +1,53 @@
+# illustrate the ciphertext only and known plaintext attacks.
+
+# ciphertext-only attack, the attacker has access to one or more
+# intercepted ciphertexts but has no knowledge of the plaintext.
+# goal -> encrption key or plaintext
+
+# In a known-plaintext attack, the attacker has access to both the
+# plaintext and the corresponding ciphertext. goal-> encrption key
+
+# For the ciphertext-only attack, we'll assume that we have access to
+# the encrypted message, but not the key.
+
+# For the known-plaintext attack, we'll assume that we have both the
+# encrypted message and a corresponding plaintext message.
+
+import string
+
+def caesar_encrypt(plaintext, key):
+    alphabet = string.ascii_lowercase
+    encrypted_text = ""
+    for char in plaintext.lower():
+        if char in alphabet:
+            encrypted_text += alphabet[(alphabet.index(char) + key) % 26]
+        else:
+            encrypted_text += char
+    return encrypted_text
+
+def caesar_decrypt(ciphertext, key):
+    return caesar_encrypt(ciphertext, -key)
+
+def brute_force_attack(ciphertext):
+    for key in range(1, 26):
+        decrypted_text = caesar_decrypt(ciphertext, key)
+        print(f"Key: {key}, Decrypted text: {decrypted_text}")
+
+def known_plaintext_attack(ciphertext, plaintext):
+    key = (ord(ciphertext[0]) - ord(plaintext[0])) % 26
+    decrypted_text = caesar_decrypt(ciphertext, key)
+    print(f"Key: {key}, Decrypted text: {decrypted_text}")
+
+# Encrypt a message
+plaintext = "khoor"
+key = 3
+ciphertext = caesar_encrypt(plaintext, key)
+print(f"Encrypted text: {ciphertext}")
+
+# Ciphertext-only attack
+print("Ciphertext-only attack:")
+brute_force_attack(ciphertext)
+
+# Known-plaintext attack
+print("\nKnown-plaintext attack:")
+known_plaintext_attack(ciphertext, "khoor")
