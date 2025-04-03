@@ -1,0 +1,51 @@
+import numpy as np
+multiInv26={1:1,3:9,9:3,5:21,21:5,7:15,15:7,11:19,19:11,17:23,23:17,25:25}
+def encryption(plainText,key):
+    m=key.shape[0] #no. of plain text letter to be multiply
+    print(key)
+    output=''
+    for i in range(0,len(plainText),m):
+        block=np.array([ord(x)-97 for x in plainText[i:i+m]])#PT IS READY to multiply
+        print("Block")
+        print(block)
+        c=np.matmul(block,key)%26
+        print("After multiplication")
+        print(c)
+        output=output+''.join([chr(x+65) for x in c])
+        #print(c)
+    return output
+    
+def decryption(ciperText,key):
+    m=key.shape[0]
+    det=multiInv26[int(np.linalg.det(key)%26)]
+    adj=np.round((np.linalg.det(key))*(np.linalg.inv(key)))
+    #print(adj)
+    invKey=(((det*adj))).astype(int)%26
+    print(invKey)
+    output=''
+    for i in range(0,len(ciperText),m):
+        block=np.array([ord(x)-65 for x in ciperText[i:i+m]])
+        c=np.matmul(block,invKey)%26
+        output=output+''.join([chr(x+97) for x in c])
+    return output
+
+
+
+# main function
+plainText=input("Enter the plain text: ")
+plainText=''.join(plainText.split())
+m=int(input("Enter number of row of key matrix: "))
+n=int(input("Enter number of col of key matrix: "))
+print("Enter the elements of key row-wise: ")
+key=[]
+for i in range(n*m):
+    key.append(int(input()))
+key=np.array(key).reshape(m,n)
+if(len(plainText)%m!=0):
+    plainText=''.join([plainText,'x'*(m-(len(plainText)%m))])# to add trailing 'x' if length not multiple of row
+ciperText=encryption(plainText,key)
+print("Encrypted message: ")
+print(ciperText)
+original=decryption(ciperText,key)
+print("Decrypted message: ")
+print(original)
