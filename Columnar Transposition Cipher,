@@ -1,0 +1,100 @@
+def encrypt_columnar_transposition(plain_text, key):
+    """
+    Encrypts the plain text using the Columnar Transposition Cipher.
+    """
+    # Determine the order of columns based on the key
+    key_order = sorted(range(len(key)), key=lambda k: key[k])
+    num_cols = len(key)
+    num_rows = (len(plain_text) + num_cols - 1) // num_cols  # Ceiling division
+    
+    # Fill the matrix row-wise
+    matrix = [['' for _ in range(num_cols)] for _ in range(num_rows)]
+    idx = 0
+    for i in range(num_rows):
+        for j in range(num_cols):
+            if idx < len(plain_text):
+                matrix[i][j] = plain_text[idx]
+                idx += 1
+
+    # Read the matrix column-wise based on the key order
+    cipher_text = ''
+    for j in key_order:
+        for i in range(num_rows):
+            if matrix[i][j]:  # Avoid empty cells
+                cipher_text += matrix[i][j]
+
+    return cipher_text, matrix
+
+def decrypt_columnar_transposition(cipher_text, key):
+    """
+    Decrypts the cipher text using the Columnar Transposition Cipher.
+    """
+    key_order = sorted(range(len(key)), key=lambda k: key[k])
+    num_cols = len(key)
+    num_rows = (len(cipher_text) + num_cols - 1) // num_cols  # Ceiling division
+
+    # Create an empty matrix
+    matrix = [['' for _ in range(num_cols)] for _ in range(num_rows)]
+    
+    # Fill the matrix column-wise
+    idx = 0
+    for j in key_order:
+        for i in range(num_rows):
+            if idx < len(cipher_text):
+                matrix[i][j] = cipher_text[idx]
+                idx += 1
+
+    # Read the matrix row-wise to reconstruct the plain text
+    plain_text = ''
+    for i in range(num_rows):
+        for j in range(num_cols):
+            if matrix[i][j]:  # Avoid empty cells
+                plain_text += matrix[i][j]
+
+    return plain_text, matrix
+
+def display_menu():
+    """
+    Displays menu options.
+    """
+    print("\n1. Encrypt using Columnar Transposition Cipher")
+    print("2. Decrypt using Columnar Transposition Cipher")
+    print("3. Exit")
+
+def display_matrix(matrix):
+    """
+    Displays the encryption matrix.
+    """
+    for row in matrix:
+        print(" ".join(row))
+
+def main():
+    while True:
+        display_menu()
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            plain_text = input("Enter the plain text: ")
+            key = input("Enter the key (word): ")
+            cipher_text, matrix = encrypt_columnar_transposition(plain_text, key)
+            print(f'\nEncrypted text: {cipher_text}')
+            print("Matrix:")
+            display_matrix(matrix)
+
+        elif choice == '2':
+            cipher_text = input("Enter the cipher text: ")
+            key = input("Enter the key (word): ")
+            plain_text, matrix = decrypt_columnar_transposition(cipher_text, key)
+            print(f'\nDecrypted text: {plain_text}')
+            print("Matrix:")
+            display_matrix(matrix)
+
+        elif choice == '3':
+            print("Exiting...")
+            break
+
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
