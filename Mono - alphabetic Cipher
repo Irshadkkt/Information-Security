@@ -1,0 +1,82 @@
+def encry(k, st, j):
+    for i in st:
+        if 'a' <= i <= 'z':
+            if ord(i) + k <= ord('z'):
+                j += chr(ord(i) + k)
+            else:
+                j += chr(ord(i) - 26 + k)
+        elif 'A' <= i <= 'Z':
+            if ord(i) + k <= ord('Z'):
+                j += chr(ord(i) + k)
+            else:
+                j += chr(ord(i) - 26 + k)
+        else:
+            j += i
+    print("\nEncrypted message is:", j, "\n")
+    start()
+
+def decry(k, st, j):
+    for i in st:
+        if 'a' <= i <= 'z':
+            if ord(i) - k >= ord('a'):
+                j += chr(ord(i) - k)
+            else:
+                j += chr(ord(i) + 26 - k)
+        elif 'A' <= i <= 'Z':
+            if ord(i) - k >= ord('A'):
+                j += chr(ord(i) - k)
+            else:
+                j += chr(ord(i) + 26 - k)
+        else:
+            j += i
+    print("\nDecrypted message is:", j, "\n")
+    start()
+
+def brut(st,j):
+    for l in range(26):
+        for i in st:
+            if 'a' <= i <= 'z':
+                if ord(i) - l >= ord('a'):
+                    j += chr(ord(i) - l)
+                else:
+                    j += chr(ord(i) + 26 - l)
+            elif 'A' <= i <= 'Z':
+                if ord(i) - l >= ord('A'):
+                    j += chr(ord(i) - l)
+                else:
+                    j += chr(ord(i) + 26 - l)
+            else:
+                j += i
+        print(j)
+        yn = input("Is this your string:")
+        if yn=="y":
+            print("The string  is ",j," and the key is ",l)
+            break
+        if yn=="n":
+            j=''
+            continue
+            
+def start():
+    def rest():
+        st = input('Enter the string:')
+        j = ''
+        choic(st,j)
+    def choic(st,j):
+        x = int(input("\nEnter \n1 for encryption \n2 for decryption\n3 encrypt and decrypt new string\n4 to bruteforce\n5 to stop\n: "))
+        if x == 1:
+            k = int(input('\nEnter the k value:'))
+            encry(k, st, j)
+        elif x == 2:
+            k = int(input('\nEnter the k value:'))
+            decry(k, st, j)
+        elif x == 3:
+            rest()
+        elif x==4:
+            brut(st,j)
+        else:
+            return 0
+    choic(st,j)
+    
+st = input('Enter the string:')
+j = ''
+start()
